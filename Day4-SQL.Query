@@ -1,0 +1,175 @@
+Joins:
+
+_ --INNER JOIN----_
+retriving the columns from more than one table
+when we need to access the data from different tables we go for joins
+
+Display the book code book name and supplier name of the books in the library
+
+WE HAVE TO JOIN BY USING "ON" CONDITION 
+***SELECT BOOK_CODE,BOOK_TITLE,SUPPLIER_NAME FROM LMS_BOOK_DETAILS JOIN LMS_SUPPLIERS_DETAILS ON SUPPLIER_ID = SUPPLIER_ID;
+
+-- WE GET ERROR AS UNAMGIOUS COLUMN-- DUE TO IT CANT KNOW THAT SUPPLIER_ID ARE FROM DIFFERENT TABLES 
+TO GET THE ERROR CORRECTED WE HAVE TO SPECIFY THE TABLENAME.SUUOPLIER_ID TO GET TO KNOW WHICH TABLES DATA IS TO BE USED
+
+SELECT BOOK_CODE,BOOK_TITLE,SUPPLIER_NAME FROM LMS_BOOK_DETAILS JOIN LMS_SUPPLIERS_DETAILS ON LMS_BOOK_DETAILS.SUPPLIER_ID = LMS_SUPPLIERS_DETAILS.SUPPLIER_ID;
+-------------------------------------------------------
+DISPLAY THE BOOK_TITLR AND MEMEBER_ID WHO HAS TAKEN THE BOOKS FROM LIBRARY
+
+SELECT BOOK_TITLE,MEMBER_ID FROM LMS_BOOK_DETAILS JOIN LMS_BOOK_ISSUE ON LMS_BOOK_DETAILS.BOOK_CODE=LMS_BOOK_ISSUE.BOOK_CODE;
+
+IF WE NEED TO GET THE DATA WHICH IS UNIQIE IE:,WE CAN USE DISTINCT KEYWORD
+
+SELECT DISTINCT BOOK_TITLE,MEMBER_ID FROM LMS_BOOK_DETAILS  JOIN LMS_BOOK_ISSUE ON LMS_BOOK_DETAILS.BOOK_CODE=LMS_BOOK_ISSUE.BOOK_CODE; 
+SELECT DISTINCT BOOK_TITLE,MEMBER_ID FROM LMS_BOOK_DETAILS  INNER JOIN LMS_BOOK_ISSUE ON LMS_BOOK_DETAILS.BOOK_CODE=LMS_BOOK_ISSUE.BOOK_CODE; 
+JOIN KEYWORD IS TAKEN TO CONSIDERATION AS INNER JOIN 
+------------------------------------------
+
+N TABLES NEED N-1 JOIN KEYWORDS ARE REQUIRED
+-----------------------------------------------
+WE CAN GIVE THE ALIAS NAME BY SPECIFING IT AND WE CAN USE FOR ACCESIN GOF THE TABLES WHEN REQUIRED
+SELECT DADA.BOOK_CODE,DADA.BOOK_TITLE,KHALANDAR.SUPPLIER_NAME FROM LMS_BOOK_DETAILS AS DADA JOIN LMS_SUPPLIERS_DETAILS AS KHALANDAR ON DADA.SUPPLIER_ID=KHALANDAR.SUPPLIER_ID;
+-----------------------------------------
+DISPLAY BOOK_NAME AND MEMBER NAME WHO HAS TAKEN BOOKS
+SELECT L1.BOOK_TITLE,L3.MEMNER_NAME FROM LMS_BOOK_DETAILS AS L1 JOIN LMS_BOOK_ISSUE AS L2 ON L1.BOOK_CODE=L2.BOOK_CODE JOIN LMS_MEMBERS AS L3 ON L2.MEMBER_ID = L3.MEMBER_ID;
+
+--------------------------------------------------
+WE ARE USING THE 2 JOINS TO RETRIVE THE DATA FROM THE 3 TABLES 
+SELECT DISTINCT L1.BOOK_TITLE,L3.MEMBER_NAME FROM LMS_BOOK_DETAILS AS L1 JOIN LMS_BOOK_ISSUE AS L2 ON L1.BOOK_CODE=L2.BOOK_CODE JOIN LMS_MEMBERS AS L3 ON L2.MEMBER_ID = L3.MEMBER_ID;
+-----------------------------------------------------------
+DISPLAY THE SUPPLIER ID AND NUMBER OF BOOKS SUPPLIED BY EACH SUPPLIER
+
+SELECT SUPPLIER_ID,COUNT(BOOK_CODE) AS NUMBEROFBOOKS FROM LMS_BOOK_DETAILS 
+WHERE SUPPLIER_ID IS NOT NULL
+GROUP BY SUPPLIER_ID;
+-------------------------------------------------------------------
+DISPLAY THE SUPPLIERNAME AND NUMBER OF BOOKS SUPPLIED BY EACH SUPPLIER
+
+SELECT SUPPLIER_NAME,COUNT(BOOK_CODE) AS COUNT_OF_BOOKS FROM
+ LMS_BOOK_DETAILS AS P1 JOIN LMS_SUPPLIERS_DETAILS AS P2
+ON P1.SUPPLIER_ID=P2.SUPPLIER_ID GROUP BY P2.SUPPLIER_NAME,P2.SUPPLIER_ID
+
+1.Write a query to display the book title, supplier name who has supplied books to library
+
+SELECT SUPPLIER_NAME,BOOK_TITLE  FROM 
+LMS_BOOK_DETAILS AS P1 JOIN LMS_SUPPLIERS_DETAILS AS P2
+ON P1.SUPPLIER_ID = P2.SUPPLIER_ID;
+
+2.	Write a query to display member name and book code for the book he/she taken from the library
+
+select MEMBER_NAME,BOOK_CODE FROM 
+LMS_BOOK_ISSUE AS P1 JOIN LMS_MEMBERS AS P2
+ON P1.MEMBER_ID = P2.MEMBER_ID;
+
+
+3.Write a query to display the book title and date when the book was taken from the library.
+
+SELECT BOOK_TITLE,DATE_ISSUE FROM 
+LMS_BOOK_DETAILS AS P1 JOIN LMS_BOOK_ISSUE AS P2
+ON P1.BOOK_CODE=P2.BOOK_CODE;
+
+
+4.Write a query to display the member id and the fine amount paid by the member in the library.
+
+SELECT DISTINCT MEMBER_ID,FINE_AMOUNT FROM
+LMS_BOOK_ISSUE AS P1 JOIN  LMS_FINE_DETAILS AS P2
+ON P1.FINE_RANGE=P2.FINE_RANGE;
+
+5.Write a query to display the member name and the date difference between the date return and date returned.
+
+SELECT MEMBER_NAME,DATEDIFF(MONTH,'DATE_RETURN','DATE_RETURNED') FROM 
+LMS_BOOK_ISSUE AS P1 JOIN LMS_MEMBERS AS P2 
+ON P1.MEMBER_ID=P2.MEMBER_ID;
+
+6.Write a query to display the book title and the member name of member who has taken book from library.
+
+SELECT BOOK_TITLE,MEMBER_NAME FROM
+LMS_MEMBERS AS P1 JOIN LMS_BOOK_ISSUE AS P2
+ON P1.MEMBER_ID=P2.MEMBER_ID
+JOIN LMS_BOOK_DETAILS AS P3
+ON P2.BOOK_CODE = P3.BOOK_CODE; 
+
+
+7.Write a query to display the book title, member name and the supplier name for the books taken from the library.
+
+SELECT BOOK_TITLE,MEMBER_NAME,SUPPLIER_NAME FROM
+LMS_BOOK_DETAILS AS  P1 JOIN LMS_SUPPLIERS_DETAILS AS P2 
+ON P1.SUPPLIER_ID=P2.SUPPLIER_ID
+JOIN LMS_BOOK_ISSUE AS P3
+ON P1.BOOK_CODE=P3.BOOK_CODE
+JOIN LMS_MEMBERS AS P4
+ON P3.MEMBER_ID=P4.MEMBER_ID;
+
+
+****************************************************************************************************************************************************************
+
+Problem # 1:
+Write a query to display the member id, member name of the members, book code and book title of the books taken by them
+  
+  select MEMBER_ID,(select MEMBER_NAME from LMS_MEMBERS where MEMBER_ID=t1.MEMBER_ID )as
+   MEMBER_NAME,BOOK_CODE,(select BOOK_TITLE from LMS_BOOK_DETAILS where BOOK_CODE=t1.BOOK_CODE)as BOOK_TITLE from LMS_BOOK_ISSUE t1
+ 
+Problem # 3:
+Write a query to display the member id, member name, fine range and fine amount of the members whose fine amount is less than 100. 
+
+   SELECT T1.MEMBER_ID,(SELECT MEMBER_NAME FROM LMS_MEMBERS WHERE MEMBER_ID=T1.MEMBER_ID) 
+   AS MEMBER_NAME,(SELECT T2.FINE_RANGE FROM LMS_MEMBERS WHERE MEMBER_ID=T1.MEMBER_ID)AS FINE_RANGE,
+   (SELECT FINE_AMOUNT FROM LMS_FINE_DETAILS T2 WHERE FINE_RANGE= T1.FINE_RANGE)AS FINE_AMOUNT FROM LMS_BOOK_ISSUE T1 LEFT JOIN 
+    LMS_FINE_DETAILS T2 ON T1.FINE_RANGE = T2.FINE_RANGE WHERE T2.FINE_AMOUNT < 100
+
+Problem # 4:
+Write a query to display the book code, book title, publisher, edition, price and year of publication and sort based on year of publication, publisher and edition.
+
+    SELECT BOOK_CODE,BOOK_TITLE,PUBLICATION,BOOK_EDITION,PRICE,YEAR(PUBLISH_DATE) AS YEAR_OF_PUBLICATION
+     FROM LMS_BOOK_DETAILS ORDER BY YEAR_OF_PUBLICATION
+  
+Problem # 5:
+Write a query to display the book code, book title and rack number of the books which are placed in rack 'A1' and sort by book title in ascending order. 
+
+   SELECT BOOK_CODE,BOOK_TITLE,RACK_NUM FROM LMS_BOOK_DETAILS where RACK_NUM='A1' ORDER BY BOOK_TITLE ASC
+  
+Problem # 6:
+Write a query to display the member id, member name, due date and date returned of the members who has returned the books after the due date. Hint: Date_return is due date and Date_returned is actual book return date. 
+
+    SELECT MEMBER_ID,(SELECT MEMBER_NAME FROM LMS_MEMBERS WHERE MEMBER_ID=T1.MEMBER_ID) AS MEMBER_NAME,DATE_RETURN AS
+    DUE_DATE,DATE_RETURNED FROM LMS_BOOK_ISSUE T1 WHERE DATE_RETURN < DATE_RETURNED
+
+Problem # 7:
+Write a query to display the member id, member name and date of registration who have not taken any book. 
+
+   SELECT T1.MEMBER_ID,MEMBER_NAME,DATE_REGISTER FROM LMS_MEMBERS T1 LEFT JOIN LMS_BOOK_ISSUE T2 ON T1.MEMBER_ID = T2.MEMBER_ID WHERE T2.MEMBER_ID IS NULL
+
+Problem # 8:
+Write a Query to display the member id and member name of the members who has not paid any fine in the year 2012.
+
+   select t1.MEMBER_ID,t2.MEMBER_NAME from LMS_BOOK_ISSUE t1 join LMS_MEMBERS t2 on t1.MEMBER_ID=t2.MEMBER_ID 
+   where t1.DATE_RETURN>=t1.DATE_RETURNED and YEAR(t1.DATE_RETURNED)=2012
+
+Problem # 10:
+Write a query to list the book title and supplier id for the books authored by “Herbert Schildt" and the book edition is 5 and supplied by supplier ‘S01’. 
+
+    select BOOK_TITLE,SUPPLIER_ID from LMS_BOOK_DETAILS where AUTHOR='Herbert Schildt' and BOOK_EDITION='5' and SUPPLIER_ID='S01'
+
+Problem # 11:
+Write a query to display the rack number and the number of books in each rack with alias name “NOOFBOOKS” and sort by rack number in ascending order.
+
+    select RACK_NUM,COUNT(book_code) as NO_OF_BOOKS from LMS_BOOK_DETAILS group by RACK_NUM
+ 
+Problem # 12:
+Write a query to display book issue number, member name, date or registration, date of expiry, book title, category author, price, date of issue, date of return, actual returned date, issue status, fine amount. 
+
+    Select BOOK_ISSUE_NO,MEMBER_NAME,DATE_REGISTER,DATE_EXPIRE,BOOK_TITLE,CATEGORY, PRICE, DATE_ISSUE,DATE_RETURN,DATE_RETURNED,
+     (select FINE_AMOUNT from LMS_FINE_DETAILS f where i.FINE_RANGE= f.FINE_RANGE)as FINE_AMOUNT from LMS_BOOK_ISSUE i,LMS_MEMBERS m,LMS_BOOK_DETAILS b 
+       where i.MEMBER_ID=m.MEMBER_ID and b.BOOK_CODE=i.BOOK_CODE
+ 
+ 
+Problem # 13:
+Write a query to display the book code, title, publish date of the books which is been published in the month of December. 
+
+ select BOOK_CODE,BOOK_TITLE,PUBLISH_DATE from LMS_BOOK_DETAILS where MONTH(PUBLISH_DATE)='12'
+ 
+ 
+Problem # 15:
+Write a query to display book code, book name, and publisher, how old the book is. Sorted as older to newer.
+
+  select BOOK_CODE,BOOK_TITLE,PUBLICATION,YEAR(GETDATE())-YEAR(DATE_ARRIVAL)as YEARS from LMS_BOOK_DETAILS order by YEARS desc
